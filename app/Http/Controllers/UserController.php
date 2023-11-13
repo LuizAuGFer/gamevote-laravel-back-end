@@ -19,7 +19,7 @@ class UserController extends Controller
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->country = $request->country;
-                $user->password = hash('sha256', $request->password);
+                $user->password = hash('sha256', request()->password);
                 $user->save();
 
             }catch(\Exception $e) {
@@ -32,5 +32,16 @@ class UserController extends Controller
             return response()->json(['message' => 'O email informado não pode ser usado!'])->setStatusCode(422);
         }
     }
+
+   public function login() {
+
+        $user = User::where('email', '=', request()->email)->where('password', hash('sha256', request()->password))->first();
+
+        if($user) {
+            return response()->json(['_token' => $user->createToken('token-game', ['server:update'])->plainTextToken, 'message' => 'Login executado com sucesso!'])->setStatusCode(200);
+        }else {
+            return response()->json(['message' => 'Erro ao executar login!'])->setStatusCode(422);
+        }   
+   }
 
 }
