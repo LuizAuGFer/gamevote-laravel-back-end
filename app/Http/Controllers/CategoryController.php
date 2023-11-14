@@ -86,9 +86,28 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(Request $request)
     {
-        //
+        $category = Category::where('id', $request->category_id)->first();
+
+        if(!$category) {
+            return response()->json(['message' => 'Categoria não encontrada com esse id!'])->setStatusCode(422);
+        }
+
+       try {
+    
+            $category->update([
+                'name' => $request->name,
+                'description' => $request->description,
+            ]);
+
+       }catch(\Exception $e) {
+
+        return response()->json(['message' => 'Ocorreu um erro ao tentar atualizar a categoria!'])->setStatusCode(422);
+
+       }
+
+       return response()->json(['message' => 'Atualização finalizada com sucesso!'])->setStatusCode(201);
     }
 
     /**
