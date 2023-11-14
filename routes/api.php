@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,11 +33,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin
     Route::middleware('administrative-access')->group(function () {
 
-        Route::prefix('game')->group(function () {
-            Route::post('/store', [GameController::class, 'store'])->name('game.store');
-            Route::get('/query', [GameController::class, 'query'])->name('game.query');
-            Route::post('/update/{game_id}', [GameController::class, 'update'])->name('game.update');
-            Route::delete('{game_id}/destroy', [GameController::class, 'destroy'])->name('game.destroy');
+        Route::prefix('games')->group(function () {
+            Route::post('/store', [GameController::class, 'store'])->name('games.store');
+            Route::get('/query', [GameController::class, 'query'])->name('games.query');
+            Route::post('/update/{game_id}', [GameController::class, 'update'])->name('games.update');
+            Route::delete('{game_id}/destroy', [GameController::class, 'destroy'])->name('games.destroy');
+        });
+
+        Route::prefix('categories')->group(function () {
+            Route::post('/store', [CategoryController::class, 'store'])->name('categories.store');
         });
 
     });

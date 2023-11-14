@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -27,9 +28,19 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(Request $request)
     {
-        //
+        try {
+            $category = new Category;
+            $category->name = $request->name;
+            $category->description = $request->description;
+            $category->save();
+        }catch(\Exception $e) {
+            
+            return response()->json(['message' => 'Ocorreu um erro no cadastro da categoria!'])->setStatusCode(422);
+        }
+
+        return response()->json(['message' => 'Categoria cadastrada com sucesso!'])->setStatusCode(201);
     }
 
     /**
