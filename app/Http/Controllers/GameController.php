@@ -146,8 +146,27 @@ class GameController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Game $game)
+    public function destroy(Request $request)
     {
-        //
+        $game = Game::where('id', $request->game_id)->first();
+
+        if(!$game) {
+            return response()->json(['message' => 'Jogo não encontrado com esse id!'])->setStatusCode(422);
+        }
+
+        try {
+
+            // Remove photo
+            if(File::exists($game->photo)) {
+                File::delete($game->photo);
+            }
+
+            $game->delete();
+
+        }catch(\Exception $e) {
+            return response()->json(['message' => 'Erro ao tentar excluir o jogo!'])->setStatusCode(422);
+        }
+
+        return response()->json(['message' => 'Jogo deletado'])->setStatusCode(201);
     }
 }
