@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('categories')->group(function () {
             Route::post('/store', [CategoryController::class, 'store'])->name('categories.store');
             Route::get('/all', [CategoryController::class, 'all'])->name('categories.all');
+            Route::delete('/{category_id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
         });
 
     });

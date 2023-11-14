@@ -62,7 +62,7 @@ class CategoryController extends Controller
         $aux_array = array();
 
         foreach($categories as $category) {
-            
+
             $aux_array['id'] = $category->id;
             $aux_array['name'] = $category->name;
             $aux_array['description'] = $category->description;
@@ -94,8 +94,21 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request)
     {
-        //
+        $category = Category::where('id', $request->category_id)->first();
+
+        if(!$category) {
+            return response()->json(['message' => 'Categoria não encontrada com esse id!'])->setStatusCode(422);
+        }
+
+        try {
+            $category->delete();
+
+        }catch(\Exception $e) {
+            return response()->json(['message' => 'Erro ao tentar excluir a categoria!'])->setStatusCode(422);
+        }
+
+        return response()->json(['message' => 'Categoria deletada!'])->setStatusCode(201);
     }
 }
