@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\GameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +27,9 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [UserController::class, 'me'])->name('me');
+
+    // Admin
+    Route::middleware('administrative-access')->group(function () {
+        Route::post('/game', [GameController::class, 'store'])->name('game.store');
+    });
 });
