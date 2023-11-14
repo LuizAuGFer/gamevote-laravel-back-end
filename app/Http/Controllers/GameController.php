@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateGameRequest;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
+use File;
 
 class GameController extends Controller
 {
@@ -36,6 +37,12 @@ class GameController extends Controller
             return response()->json(['message' => 'Informação obrigatórias estão ausentes!'])->setStatusCode(422);
         }
 
+        $game = Game::where('name', $request->name)->where('developer', $request->developer)->first();
+
+        if($game) {
+            return response()->json(['message' => 'Já existe um jogo cadastrado com esse nome!'])->setStatusCode(422);
+        }
+
         try {
 
             // Save photo
@@ -61,9 +68,24 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Game $game)
+    public function query(Request $request)
     {
-        //
+        $games = Game::where('name', 'like','%'.$request->name.'%')->get();
+        $collect = collect();
+        $aux_array = array();
+
+        foreach($games as $game) {
+            $aux_array['id'] = $game->id;
+            $aux_array['name'] = $game->name;
+            $aux_array['year'] = $game->year;
+            $aux_array['developer'] = $game->developer;
+
+            $collect->push($aux_array);
+
+            $aux_array = [];
+        }
+
+        return $collect->toArray();
     }
 
     /**
@@ -77,9 +99,48 @@ class GameController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateGameRequest $request, Game $game)
+    public function update(Request $request)
     {
-        //
+        $game = Game::where('id', $request->game_id)->first();
+
+        if(!$game) {
+            return response()->json(['message' => 'Jogo não encontrado com esse id!'])->setStatusCode(422);
+        }
+
+       try {
+        
+            // Update photo
+            if($request->photo) {
+
+                if (file_exists($game->photo)){
+                // Remove
+                if(File::exists($game->photo)) {
+                        File::delete($game->photo);
+                    }
+                }
+
+                // Save photo
+                $png_url = "photo-".time().".png";
+                $path = 'images/games/' . $png_url;
+                $photo = Image::make(file_get_contents($request->photo))->save($path);    
+
+                $game->update(['photo' => $path]);
+            }
+        
+
+            $game->update([
+                'name' => $request->name,
+                'year' => $request->year,
+                'developer' => $request->developer
+            ]);
+
+       }catch(\Exception $e) {
+
+        return response()->json(['message' => 'Ocorreu um erro ao tentar atualizar o jogo!'])->setStatusCode(422);
+
+       }
+
+       return response()->json(['message' => 'Atualização finalizada com sucesso!'])->setStatusCode(201);
     }
 
     /**

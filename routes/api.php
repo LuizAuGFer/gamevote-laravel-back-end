@@ -26,10 +26,17 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/me', [UserController::class, 'me'])->name('me');
 
     // Admin
     Route::middleware('administrative-access')->group(function () {
-        Route::post('/game', [GameController::class, 'store'])->name('game.store');
+
+        Route::prefix('game')->group(function () {
+            Route::post('/store', [GameController::class, 'store'])->name('game.store');
+            Route::get('/query', [GameController::class, 'query'])->name('game.query');
+            Route::post('/update/{game_id}', [GameController::class, 'update'])->name('game.update');
+        });
+
     });
 });
