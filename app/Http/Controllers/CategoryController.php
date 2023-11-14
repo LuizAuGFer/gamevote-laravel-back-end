@@ -36,7 +36,7 @@ class CategoryController extends Controller
             $category->description = $request->description;
             $category->save();
         }catch(\Exception $e) {
-            
+
             return response()->json(['message' => 'Ocorreu um erro no cadastro da categoria!'])->setStatusCode(422);
         }
 
@@ -50,6 +50,30 @@ class CategoryController extends Controller
     {
         //
     }
+
+    /**
+     * Display all resources.
+     */
+    public function all(Request $request)
+    {
+        $categories = Category::all();
+        
+        $collect = collect();
+        $aux_array = array();
+
+        foreach($categories as $category) {
+            
+            $aux_array['id'] = $category->id;
+            $aux_array['name'] = $category->name;
+            $aux_array['description'] = $category->description;
+
+            $collect->push($aux_array);
+
+            $aux_array = [];
+        }
+
+        return $collect->toArray();
+     }
 
     /**
      * Show the form for editing the specified resource.
