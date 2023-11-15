@@ -25,6 +25,7 @@ class Voting extends Model
         'name',
         'photo',
         'expires_in',
+        'is_active'
     ];
 
     /**
@@ -36,6 +37,7 @@ class Voting extends Model
         'name'          => 'string',
         'photo'         => 'string',
         'expires_in'    => 'date',
+        'is_active'     => 'boolean',
     ];
 
     /**

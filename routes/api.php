@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VotingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,5 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/{category_id}/update', [CategoryController::class, 'update'])->name('categories.update');
         });
 
+        Route::prefix('votings')->group(function () {
+            Route::post('/store', [VotingController::class, 'store'])->name('votings.store');
+
+        });
     });
 });

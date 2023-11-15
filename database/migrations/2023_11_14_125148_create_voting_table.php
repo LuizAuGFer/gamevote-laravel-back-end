@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('photo');
             $table->dateTime('expires_in');
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }
