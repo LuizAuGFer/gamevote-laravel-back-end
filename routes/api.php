@@ -22,10 +22,10 @@ use App\Http\Controllers\VotingController;
 */
 
 // Account
-Route::group(['prefix' => 'auth'], function () {
-    Route::post('/register', [RegisterController::class, 'register'])->name('register');
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
-});
+
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+
 
 Route::middleware('auth:sanctum')->group(function () {
 
